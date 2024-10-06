@@ -1,22 +1,22 @@
 package main
 
 import (
+	restHandler "go-service/handler/rest"
+	"go-service/repository"
+	"go-service/service"
+
 	"github.com/gin-gonic/gin" // Gin framework
 )
 
 func main() {
-    router := gin.Default()
-/*
-    // Initialize repository and service
-    userRepo := repository.NewUserRepository()
-    userService := services.NewUserService(userRepo)	
+	// init repo
+    repo := repository.Init()	
 
-    // Inject service into the controller
-    userController := controllers.NewUserController(userService)
+	// init service
+	svc := service.Init(repo)
+	gin.SetMode(gin.ReleaseMode)
+	router := gin.New()
+	rest := restHandler.Init(svc, router)
 
-    // Set up routes
-    router.GET("/user/:id", userController.GetUser)
-*/
-    // Run the server
-    router.Run(":8080")
+	rest.Run()
 }
