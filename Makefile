@@ -21,6 +21,6 @@ run: build
 	@./build/app
 
 .PHONY: run-debug
-run-debug: build
+run-debug: swag build
 	@./build/app -debug
 

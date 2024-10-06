@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	_ "go-service/docs"
 	restHandler "go-service/handler/rest"
 	"go-service/repository"
 	"go-service/service"
@@ -14,6 +15,17 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// @title Swagger for go-service
+// @version 1.0
+// @description Swagger for backend API service
+// @description Get the Bearer token on the Authentication Service
+// @description JSON Link: <a href=/swagger/doc.json>docs.json</a>
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+
+// @docExpansion none
 func main() {
 	debug := flag.Bool("debug", false, "Enable debug mode")
 	flag.Parse()
@@ -30,7 +42,6 @@ func main() {
 	// init router 
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
-
 	// ini rest 
 	rest := restHandler.Init(svc, router, logger)
 

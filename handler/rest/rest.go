@@ -6,6 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type REST interface {
@@ -35,6 +37,8 @@ func Init(service *service.Service, ginEngine *gin.Engine, logger *log.Logger) R
 }
 
 func (r *rest) Serve() {
+
+    r.ginEngine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
     r.ginEngine.Use(r.LoggerMiddleware())
     r.ginEngine.Handle(POST, "/login", r.Login)
     group := r.ginEngine.Group("")
