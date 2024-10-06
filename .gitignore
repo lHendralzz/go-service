@@ -1,0 +1,39 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Output of the Go coverage tool, specifically when running tests
+*.out
+
+# Directories
+vendor/
+bin/
+pkg/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Go specific files
+/go.sum
+/go.mod
+
+# IntelliJ IDEA
+.idea/
+
+# VSCode
+.vscode/
+
+# Logs
+*.log
+
+# Tests
+*.test
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
