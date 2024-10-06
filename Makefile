@@ -24,3 +24,6 @@ run: build
 run-debug: swag build
 	@./build/app -debug
 
+.PHONY: mysql-start
+mysql-start:
+	@sudo service mysql start

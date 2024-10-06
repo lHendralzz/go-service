@@ -26,14 +26,15 @@ func (r *rest) Testing(ctx *gin.Context) {
 // @Produce json
 // @Param data body model.LoginRequest true "Login Request"
 // @Success 200 {object} model.LoginResponse
-// @Failure 500 {object} string
+// @Failure 500 {object} model.ErrorResponse
 // @Router /login [post]
 func (r *rest) Login(ctx *gin.Context) {
     username,password := "user", "password"
 
     token, err := r.svc.User.Login(username, password)
     if err != nil {
-        ctx.JSON(http.StatusInternalServerError, "cannot login")
+        r.logger.Error(err)
+        r.HttpRespError(ctx, err)
         return
     }
 
