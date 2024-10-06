@@ -1,12 +1,8 @@
 package user
 
-import (
-	model "go-service/model"
-)
-
 // UserRepository is an interface that defines the data operations.
 type UserRepository interface {
-    GetUserByID(id int) (*model.User, error)
+    IsExistsUsernameAndPassword(username string, password string)(bool, error)
 }
 
 // userRepository is a concrete implementation of the UserRepository interface.

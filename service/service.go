@@ -12,8 +12,14 @@ type Service struct {
 	logger *log.Logger
 }
 
-func Init(repo *repository.Repository) *Service {
+
+// 
+type Options struct {
+	User user.Option 
+}
+
+func Init(repo *repository.Repository, option Options) *Service {
 	return  &Service{
-		User: user.NewUserService(repo.User),
+		User: user.NewUserService(repo.User, option.User),
 	}
 }

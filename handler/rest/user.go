@@ -1,6 +1,7 @@
 package restHandler
 
 import (
+	"go-service/model"
 	"net/http"
 	"strconv"
 
@@ -14,11 +15,17 @@ func (r *rest) Testing(ctx *gin.Context) {
         return
     }
 
-    user, err := r.svc.User.GetUserProfile(id)
+    ctx.JSON(http.StatusOK, id)
+}
+
+func (r *rest) Login(ctx *gin.Context) {
+    username,password := "user", "password"
+
+    token, err := r.svc.User.Login(username, password)
     if err != nil {
         ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Could not get user"})
         return
     }
 
-    ctx.JSON(http.StatusOK, user)
+    ctx.JSON(http.StatusOK, model.LoginResponse{Token: token})
 }

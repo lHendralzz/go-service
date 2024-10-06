@@ -1,8 +1,12 @@
 package user
 
-import model "go-service/model"
+import (
+	"fmt"
+)
 
-// GetUserByID is a method to retrieve a user by their ID.
-func (r *userRepository) GetUserByID(id int) (*model.User, error) {
-    return &model.User{ID: id, Name: "John Doe", Age: 30}, nil
+// IsExistsUsernameAndPassword is a function to Check if there is user with username and password in database
+func (r *userRepository)IsExistsUsernameAndPassword(username string, password string)(isExists bool, err error){
+    isExists = false
+    fmt.Println(SelectUserByUsernameAndPassword, username, password)
+    return
 }

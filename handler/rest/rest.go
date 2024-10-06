@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
 type REST interface {
@@ -15,16 +16,18 @@ type REST interface {
 type rest struct{
     svc *service.Service
     ginEngine *gin.Engine
+    logger *log.Logger
 }
 
 var once = &sync.Once{}
 
-func Init(service *service.Service,ginEngine *gin.Engine) REST {
+func Init(service *service.Service, ginEngine *gin.Engine, logger *log.Logger) REST {
     var r *rest
     once.Do(func(){
         r = &rest{
             svc: service,
             ginEngine: ginEngine,
+            logger: logger,
         }
         r.Serve()
     })
@@ -32,7 +35,13 @@ func Init(service *service.Service,ginEngine *gin.Engine) REST {
 }
 
 func (r *rest) Serve() {
-    r.ginEngine.Handle(GET, "/testing", r.Testing)
+    r.ginEngine.Use(r.LoggerMiddleware())
+    r.ginEngine.Handle(POST, "/login", r.Login)
+    group := r.ginEngine.Group("")
+    {
+        group.Use(r.AuthChecker()) 
+        group.Handle(GET, "/testing2", r.Testing)
+    }
 }
 
 func (r *rest) Run() {
@@ -41,5 +50,6 @@ func (r *rest) Run() {
         r.ginEngine.ServeHTTP(ctx.Writer, ctx.Request)
     })
     port := ":8080";
+    r.logger.Info("[HTTP] @", port)
     newGin.Run(port)
 }
