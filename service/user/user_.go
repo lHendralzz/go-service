@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"go-service/stdlib/auth"
 	x "go-service/stdlib/error"
 
@@ -10,14 +11,18 @@ import (
 func (s *userService) Login(username string, password string) (string, error) {
 	isExists, err := s.userRepository.IsExistsUsernameAndPassword(username, password)
 	if err != nil {
-		return "", stacktrace.Propagate(err, "Select User With Username = %s AND password = %s", username, password)
+		return "", stacktrace.PropagateWithCode(err, x.ErrorQuery, "Select User With Username = %s AND password = %s", username, password)
 	}
 
 	if !isExists {
-		return "", stacktrace.NewErrorWithCode(x.ErrorFailedLogin, "user not found")
+		return "", stacktrace.NewErrorWithCode(x.ErrorLogin, "user not found")
 	}
 
-	token := auth.GenerateToken(username, s.opt.JWTSecret)
+	token, err := auth.GenerateToken(username, s.opt.JWTKey)
+	if err != nil {
+		fmt.Println(err)
+		return "", stacktrace.PropagateWithCode(err, x.ErrorGenerateJWTToken, "failed generateToken for username %s", username)
+	}
 
 	return token, nil
 }

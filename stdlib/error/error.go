@@ -7,15 +7,25 @@ import (
 )
 
 const (
-	ErrorFailedLogin = stacktrace.ErrorCode(iota)
+	ErrorLogin = stacktrace.ErrorCode(iota)
+	ErrorGenerateJWTToken
+	ErrorQuery
 )
 
 type ErrorMessage map[stacktrace.ErrorCode]Message
 
 var ErrorMessages = ErrorMessage{
-	ErrorFailedLogin: {
+	ErrorLogin: {
 		StatusCode: http.StatusUnauthorized,
 		Message:    "Failed Login",
+	},
+	ErrorGenerateJWTToken: {
+		StatusCode: http.StatusInternalServerError,
+		Message:    "Failed Generate JWT Token",
+	},
+	ErrorQuery: {
+		StatusCode: http.StatusInternalServerError,
+		Message:    "Failed Generate JWT Token",
 	},
 }
 

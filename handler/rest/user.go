@@ -7,15 +7,16 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
 func (r *rest) Testing(ctx *gin.Context) {
 	idStr := ctx.Param("id")
-    id, err := strconv.Atoi(idStr)
-    if err != nil {
-        ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
-        return
-    }
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
 
-    ctx.JSON(http.StatusOK, id)
+	ctx.JSON(http.StatusOK, id)
 }
 
 // Login godoc
@@ -29,14 +30,19 @@ func (r *rest) Testing(ctx *gin.Context) {
 // @Failure 500 {object} model.ErrorResponse
 // @Router /login [post]
 func (r *rest) Login(ctx *gin.Context) {
-    username,password := "user", "password"
+	var req model.LoginRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		// If there's an error, return a 400 response
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-    token, err := r.svc.User.Login(username, password)
-    if err != nil {
-        r.logger.Error(err)
-        r.HttpRespError(ctx, err)
-        return
-    }
+	token, err := r.svc.User.Login(req.Username, req.Password)
+	if err != nil {
+		r.logger.Error(err)
+		r.HttpRespError(ctx, err)
+		return
+	}
 
-    ctx.JSON(http.StatusOK, model.LoginResponse{Token: token})
+	ctx.JSON(http.StatusOK, model.LoginResponse{Token: token})
 }

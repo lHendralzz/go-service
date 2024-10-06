@@ -15,13 +15,6 @@ func InitDB(logger *log.Logger, option Option) *gorm.DB {
 		logger.Fatal("failed to connect to database:", err)
 	}
 
-	// Test the connection
-	sqlDB, err := db.DB()
-	if err != nil {
-		logger.Fatal("failed to get database object:", err)
-	}
-	defer sqlDB.Close()
-
 	return db
 }
 

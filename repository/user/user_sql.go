@@ -1,11 +1,11 @@
 package user
 
-const(
+const (
 	SelectUserByUsernameAndPassword = `
 		SELECT 
-			isExists(id)
+			id
 		FROM
-			user
+			users
 		WHERE
 			username = ? AND
 			password = ?
