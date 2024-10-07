@@ -14,15 +14,15 @@ CREATE TABLE `product` (
   PRIMARY KEY (`id`)
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `carts` (
+CREATE TABLE `order` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL ,
   PRIMARY KEY (`id`)
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `cart_details` (
+CREATE TABLE `order_details` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `cart_id` int NOT NULL ,
+  `order_id` int NOT NULL ,
   `product_id` int NOT NULL ,
   `quantity` int DEFAULT 0,
   PRIMARY KEY (`id`)
