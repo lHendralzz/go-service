@@ -63,11 +63,4 @@ func (r *rest) Run() {
 	port := ":8080"
 	r.logger.Info("[HTTP] @", port)
 	newGin.Run(port)
-	newGin := gin.New()
-	newGin.Use(func(ctx *gin.Context) {
-		r.ginEngine.ServeHTTP(ctx.Writer, ctx.Request)
-	})
-	port := ":8080"
-	r.logger.Info("[HTTP] @", port)
-	newGin.Run(port)
 }
