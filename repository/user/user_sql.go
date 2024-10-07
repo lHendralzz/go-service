@@ -5,7 +5,7 @@ const (
 		SELECT 
 			id
 		FROM
-			users
+			user
 		WHERE
 			username = ? AND
 			password = ?
