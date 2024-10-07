@@ -40,7 +40,7 @@ func main() {
 	repo := repository.Init(db)
 
 	// init service
-	svc := service.Init(repo, conf.Service)
+	svc := service.Init(repo, logger, conf.Service)
 	// init router
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()

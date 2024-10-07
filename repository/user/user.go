@@ -1,10 +1,14 @@
 package user
 
-import "gorm.io/gorm"
+import (
+	"go-service/model"
+
+	"gorm.io/gorm"
+)
 
 // UserRepository is an interface that defines the data operations.
 type UserRepository interface {
-	IsExistsUsernameAndPassword(username string, password string) (bool, error)
+	GetPasswordByUsername(username string) (model.User, error)
 }
 
 // userRepository is a concrete implementation of the UserRepository interface.

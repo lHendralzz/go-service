@@ -17,7 +17,7 @@ type ErrorMessage map[stacktrace.ErrorCode]Message
 var ErrorMessages = ErrorMessage{
 	ErrorLogin: {
 		StatusCode: http.StatusUnauthorized,
-		Message:    "Failed Login",
+		Message:    "Failed Login username or password is invalid",
 	},
 	ErrorGenerateJWTToken: {
 		StatusCode: http.StatusInternalServerError,

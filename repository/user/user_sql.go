@@ -1,14 +1,13 @@
 package user
 
 const (
-	SelectUserByUsernameAndPassword = `
+	SelectUserByUsername = `
 		SELECT 
-			id
+			id, password
 		FROM
 			user
 		WHERE
-			username = ? AND
-			password = ?
+			username = ?
 		LIMIT 1
 	`
 )

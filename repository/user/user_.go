@@ -7,12 +7,10 @@ import (
 )
 
 // IsExistsUsernameAndPassword is a function to Check if there is user with username and password in database
-func (r *userRepository) IsExistsUsernameAndPassword(username string, password string) (isExists bool, err error) {
-	isExists = false
-	var user model.User
-	if err = r.db.Raw(SelectUserByUsernameAndPassword, username, password).Scan(&user).Error; err != nil {
-		return false, stacktrace.Propagate(err, "Failed Run %s with parameters %s %s", SelectUserByUsernameAndPassword, username, password)
+func (r *userRepository) GetPasswordByUsername(username string) (user model.User, err error) {
+	if err = r.db.Raw(SelectUserByUsername, username).Scan(&user).Error; err != nil {
+		return user, stacktrace.Propagate(err, "Failed Run Query %s with parameters %s", SelectUserByUsername, username)
 	}
 
-	return user.ID != 0, nil
+	return user, nil
 }

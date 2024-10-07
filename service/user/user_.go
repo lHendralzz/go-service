@@ -4,18 +4,20 @@ import (
 	"fmt"
 	"go-service/stdlib/auth"
 	x "go-service/stdlib/error"
+	"go-service/stdlib/hash"
 
 	"github.com/palantir/stacktrace"
 )
 
 func (s *userService) Login(username string, password string) (string, error) {
-	isExists, err := s.userRepository.IsExistsUsernameAndPassword(username, password)
+	user, err := s.userRepository.GetPasswordByUsername(username)
 	if err != nil {
 		return "", stacktrace.PropagateWithCode(err, x.ErrorQuery, "Select User With Username = %s AND password = %s", username, password)
 	}
 
-	if !isExists {
-		return "", stacktrace.NewErrorWithCode(x.ErrorLogin, "user not found")
+	isValid := hash.ComparePassword(user.Password, password)
+	if !isValid {
+		return "", stacktrace.NewErrorWithCode(x.ErrorLogin, "username or password is invalid")
 	}
 
 	token, err := auth.GenerateToken(username, s.opt.JWTKey)
