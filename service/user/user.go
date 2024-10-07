@@ -8,7 +8,7 @@ import (
 
 // UserService defines methods to interact with the business logic.
 type UserService interface {
-	Login(username string, password string) (string, error)
+	Login(Email string, password string) (string, error)
 }
 
 // Option define configuration in userService

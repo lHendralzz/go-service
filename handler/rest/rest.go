@@ -19,17 +19,23 @@ type rest struct {
 	svc       *service.Service
 	ginEngine *gin.Engine
 	logger    *log.Logger
+	opt       Option
+}
+
+type Option struct {
+	JWTKey string `env:"JWT_KEY"`
 }
 
 var once = &sync.Once{}
 
-func Init(service *service.Service, ginEngine *gin.Engine, logger *log.Logger) REST {
+func Init(service *service.Service, ginEngine *gin.Engine, logger *log.Logger, opt Option) REST {
 	var r *rest
 	once.Do(func() {
 		r = &rest{
 			svc:       service,
 			ginEngine: ginEngine,
 			logger:    logger,
+			opt:       opt,
 		}
 		r.Serve()
 	})
@@ -41,13 +47,22 @@ func (r *rest) Serve() {
 	r.ginEngine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.ginEngine.Use(r.LoggerMiddleware())
 	r.ginEngine.Handle(POST, "/login", r.Login)
-	group := r.ginEngine.Group("")
+
+	group := r.ginEngine.Group("/")
 	{
 		group.Use(r.AuthChecker())
+		group.GET("/product", r.GetProduct)
 	}
 }
 
 func (r *rest) Run() {
+	newGin := gin.New()
+	newGin.Use(func(ctx *gin.Context) {
+		r.ginEngine.ServeHTTP(ctx.Writer, ctx.Request)
+	})
+	port := ":8080"
+	r.logger.Info("[HTTP] @", port)
+	newGin.Run(port)
 	newGin := gin.New()
 	newGin.Use(func(ctx *gin.Context) {
 		r.ginEngine.ServeHTTP(ctx.Writer, ctx.Request)

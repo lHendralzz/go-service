@@ -10,6 +10,7 @@ const (
 	ErrorLogin = stacktrace.ErrorCode(iota)
 	ErrorGenerateJWTToken
 	ErrorQuery
+	ErrorUnauthorized
 )
 
 type ErrorMessage map[stacktrace.ErrorCode]Message
@@ -25,7 +26,11 @@ var ErrorMessages = ErrorMessage{
 	},
 	ErrorQuery: {
 		StatusCode: http.StatusInternalServerError,
-		Message:    "Failed Generate JWT Token",
+		Message:    "Failed Run Query",
+	},
+	ErrorUnauthorized: {
+		StatusCode: http.StatusUnauthorized,
+		Message:    "Invalid Token",
 	},
 }
 

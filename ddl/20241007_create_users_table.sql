@@ -8,7 +8,7 @@ CREATE TABLE `user` (
 CREATE TABLE `product` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
-  `password` varchar(50) DEFAULT NULL,
+  `price` int DEFAULT NULL,
   `stock` int DEFAULT NULL,
   `shop_id` int DEFAULT NULL,
   PRIMARY KEY (`id`)
