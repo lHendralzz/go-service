@@ -8,7 +8,7 @@ import (
 
 // UserRepository is an interface that defines the data operations.
 type UserRepository interface {
-	GetPasswordByUsername(username string) (model.User, error)
+	GetUserByEmail(email string) (model.User, error)
 }
 
 // userRepository is a concrete implementation of the UserRepository interface.

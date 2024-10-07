@@ -1,7 +1,7 @@
 package model
 
 type LoginRequest struct {
-	Username string
+	Email    string
 	Password string
 }
 
