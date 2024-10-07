@@ -45,7 +45,7 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
 	// ini rest
-	rest := restHandler.Init(svc, router, logger)
+	rest := restHandler.Init(svc, router, logger, conf.Rest)
 
 	rest.Run()
 }

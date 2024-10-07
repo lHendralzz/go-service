@@ -3,21 +3,9 @@ package restHandler
 import (
 	"go-service/model"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
-
-func (r *rest) Testing(ctx *gin.Context) {
-	idStr := ctx.Param("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, id)
-}
 
 // Login godoc
 // @Summary Login
@@ -37,7 +25,7 @@ func (r *rest) Login(ctx *gin.Context) {
 		return
 	}
 
-	token, err := r.svc.User.Login(req.Username, req.Password)
+	token, err := r.svc.User.Login(req.Email, req.Password)
 	if err != nil {
 		r.logger.Error(err)
 		r.HttpRespError(ctx, err)
