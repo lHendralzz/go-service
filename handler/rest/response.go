@@ -11,6 +11,8 @@ import (
 )
 
 func (r *rest) HttpRespError(ctx *gin.Context, err error) {
+	r.logger.Debug(err.Error())
+
 	errorCode := stacktrace.GetCode(err)
 	if errorCode == stacktrace.NoCode {
 		ctx.JSON(http.StatusInternalServerError, err.Error())

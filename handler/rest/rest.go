@@ -51,8 +51,14 @@ func (r *rest) Serve() {
 	group := r.ginEngine.Group("/")
 	{
 		group.Use(r.AuthChecker())
+		// Product
 		group.GET("/product", r.GetProduct)
+		group.POST("/product/:product_id/add-stock", r.AddStockProduct)
+
+		// Order
+		group.POST("/order/check-out", r.CheckoutOrder)
 	}
+
 }
 
 func (r *rest) Run() {

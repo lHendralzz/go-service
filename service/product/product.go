@@ -10,6 +10,7 @@ import (
 // ProductService defines methods to interact with the business logic.
 type ProductService interface {
 	GetProduct() ([]model.Product, error)
+	AddStockProduct(param model.AddStockProductRequest) error
 }
 
 // Option define configuration in userService

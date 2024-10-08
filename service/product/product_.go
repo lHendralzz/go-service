@@ -13,3 +13,12 @@ func (s *productService) GetProduct() ([]model.Product, error) {
 	}
 	return products, nil
 }
+
+func (s *productService) AddStockProduct(param model.AddStockProductRequest) error {
+	// TODO : validate if param.Quantity minus then cannot less than 0
+	err := s.productRepository.AddStockProduct(param)
+	if err != nil {
+		return stacktrace.Propagate(err, "Failed AddStock Product")
+	}
+	return nil
+}

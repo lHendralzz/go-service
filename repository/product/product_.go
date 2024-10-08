@@ -1,6 +1,7 @@
 package product
 
 import (
+	"fmt"
 	"go-service/model"
 	x "go-service/stdlib/error"
 
@@ -16,4 +17,14 @@ func (r *productRepository) GetProduct() ([]model.Product, error) {
 	}
 
 	return products, nil
+}
+
+func (r *productRepository) AddStockProduct(param model.AddStockProductRequest) error {
+
+	err := r.db.Exec(QueryAddStockProduct, param.Quantity, param.ProductID).Error
+	if err != nil {
+		fmt.Println(err.Error())
+		return stacktrace.PropagateWithCode(err, x.ErrorQuery, "Failed Update Product")
+	}
+	return nil
 }

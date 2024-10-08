@@ -9,6 +9,7 @@ import (
 // ProductRepository is an interface that defines the data operations.
 type ProductRepository interface {
 	GetProduct() ([]model.Product, error)
+	AddStockProduct(model.AddStockProductRequest) error
 }
 
 // productRepository is a concrete implementation of the ProductRepository interface.

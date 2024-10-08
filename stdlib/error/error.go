@@ -11,6 +11,7 @@ const (
 	ErrorGenerateJWTToken
 	ErrorQuery
 	ErrorUnauthorized
+	ErrorInvalidRequest
 )
 
 type ErrorMessage map[stacktrace.ErrorCode]Message
@@ -31,6 +32,11 @@ var ErrorMessages = ErrorMessage{
 	ErrorUnauthorized: {
 		StatusCode: http.StatusUnauthorized,
 		Message:    "Invalid Token",
+	},
+
+	ErrorInvalidRequest: {
+		StatusCode: http.StatusBadRequest,
+		Message:    "Invalid Request",
 	},
 }
 
