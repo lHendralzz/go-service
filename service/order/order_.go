@@ -14,10 +14,10 @@ import (
 	"github.com/palantir/stacktrace"
 )
 
-func (o *orderService) CheckoutOrder(ctx context.Context, param model.CheckoutOrderRequest) error {
+func (o *orderService) CheckoutOrder(ctx context.Context, param model.CheckoutOrderRequest) (int, error) {
 	tx, err := o.orderRepository.BeginTransaction()
 	if err != nil {
-		return stacktrace.Propagate(err, "Failed Begin Transaction CheckoutOrder")
+		return 0, stacktrace.Propagate(err, "Failed Begin Transaction CheckoutOrder")
 	}
 
 	orderID, err := o.orderRepository.AddOrderWithTx(tx, param)
@@ -26,26 +26,26 @@ func (o *orderService) CheckoutOrder(ctx context.Context, param model.CheckoutOr
 		if errRollback != nil {
 			o.logger.Error(errRollback)
 		}
-		return err
+		return 0, err
 	}
 
-	o.logger.Info("success Create Order With ID: ", orderID)
+	o.logger.Debug("success Create Order With ID: ", orderID)
 
 	key := fmt.Sprintf("checkout:shop:%d", param.ShopID)
-	o.logger.Info("Acquire Lock : ", key)
+	o.logger.Debug("Acquire Lock : ", key)
 
 	acquire, err := o.redis.AcquireLock(ctx, key, time.Second*time.Duration(o.opt.LockDuration))
 	if err != nil {
-		return stacktrace.PropagateWithCode(err, x.ErrorRedisLock, "Failed AcquireLock")
+		return 0, stacktrace.PropagateWithCode(err, x.ErrorRedisLock, "Failed AcquireLock")
 	}
 
 	defer func() {
 		o.redis.ReleaseLock(ctx, key)
-		o.logger.Info("release Lock : ", key)
+		o.logger.Debug("release Lock : ", key)
 	}()
 
 	if !acquire {
-		return stacktrace.NewErrorWithCode(x.ErrorLockedOrder, "Cannot Checkout Order Locked Shop")
+		return 0, stacktrace.NewErrorWithCode(x.ErrorLockedOrder, "Cannot Checkout Order Locked Shop")
 	}
 
 	for _, v := range param.Products {
@@ -59,16 +59,16 @@ func (o *orderService) CheckoutOrder(ctx context.Context, param model.CheckoutOr
 			if errRollback != nil {
 				o.logger.Error(errRollback)
 			}
-			return stacktrace.PropagateWithCode(err, x.ErrorReduceProduct, "Failed SendRequestToReduceStock")
+			return 0, stacktrace.PropagateWithCode(err, x.ErrorReduceProduct, "Failed SendRequestToReduceStock")
 		}
 	}
 
 	err = tx.Commit().Error
 	if err != nil {
-		return stacktrace.Propagate(err, "Failed Commit Transaction CheckoutOrder")
+		return 0, stacktrace.Propagate(err, "Failed Commit Transaction CheckoutOrder")
 	}
 
-	return nil
+	return orderID, nil
 }
 
 func (o orderService) SendRequestToReduceStock(request model.AddStockProductRequest) error {

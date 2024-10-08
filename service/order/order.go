@@ -11,7 +11,7 @@ import (
 
 // OrderService defines methods to interact with the business logic.
 type OrderService interface {
-	CheckoutOrder(context.Context, model.CheckoutOrderRequest) error
+	CheckoutOrder(context.Context, model.CheckoutOrderRequest) (int, error)
 }
 
 // Option define configuration in orderService

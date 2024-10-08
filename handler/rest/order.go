@@ -31,7 +31,7 @@ func (r *rest) CheckoutOrder(ctx *gin.Context) {
 	r.logger.Info(req.UserID)
 
 	// TODO checkout order
-	err := r.svc.Order.CheckoutOrder(ctx.Request.Context(), req)
+	orderID, err := r.svc.Order.CheckoutOrder(ctx.Request.Context(), req)
 	if err != nil {
 		r.logger.Error(err)
 		r.HttpRespError(ctx, err)
@@ -39,6 +39,7 @@ func (r *rest) CheckoutOrder(ctx *gin.Context) {
 	}
 
 	resp := model.CheckoutOrderResponse{
+		OrderID: orderID,
 		Message: "Success Checkout An Order",
 	}
 
