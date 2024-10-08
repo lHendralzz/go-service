@@ -4,6 +4,7 @@ import (
 	"flag"
 	_ "go-service/docs"
 	restHandler "go-service/handler/rest"
+	"go-service/handler/scheduler"
 	"go-service/repository"
 	"go-service/service"
 	"go-service/stdlib/database"
@@ -57,8 +58,13 @@ func main() {
 	// init router
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
-	// ini rest
-	rest := restHandler.Init(svc, router, logger, conf.Rest)
 
+	// init Scheduler
+	scheduler := scheduler.Init(svc, logger, conf.Scheduler)
+	scheduler.Run()
+
+	// init rest
+	rest := restHandler.Init(svc, router, logger, conf.Rest)
 	rest.Run()
+
 }

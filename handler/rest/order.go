@@ -28,9 +28,6 @@ func (r *rest) CheckoutOrder(ctx *gin.Context) {
 
 	req.UserID = ctx.GetInt("userID")
 
-	r.logger.Info(req.UserID)
-
-	// TODO checkout order
 	orderID, err := r.svc.Order.CheckoutOrder(ctx.Request.Context(), req)
 	if err != nil {
 		r.logger.Error(err)

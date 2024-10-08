@@ -5,6 +5,7 @@ import (
 	"go-service/model"
 	orderRepository "go-service/repository/order"
 	"go-service/stdlib/redis"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -12,6 +13,7 @@ import (
 // OrderService defines methods to interact with the business logic.
 type OrderService interface {
 	CheckoutOrder(context.Context, model.CheckoutOrderRequest) (int, error)
+	ReleaseOrderFromCheckoutStatus(x time.Duration) error
 }
 
 // Option define configuration in orderService

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	restHandler "go-service/handler/rest"
+	"go-service/handler/scheduler"
 	"go-service/service"
 	"go-service/stdlib/config"
 	"go-service/stdlib/database"
@@ -30,8 +31,9 @@ func parseConfig(logger *logrus.Logger) Conf {
 }
 
 type Conf struct {
-	Database database.Option
-	Rest     restHandler.Option
+	Database  database.Option
+	Rest      restHandler.Option
+	Scheduler scheduler.Option
 	// Business Config
 	Business
 }

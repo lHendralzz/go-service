@@ -48,9 +48,14 @@ func (o *orderService) CheckoutOrder(ctx context.Context, param model.CheckoutOr
 		return 0, stacktrace.NewErrorWithCode(x.ErrorLockedOrder, "Cannot Checkout Order Locked Shop")
 	}
 
+	// TODO : SELECT id, name, price, stock FROM product p WHERE id in (1,2,3);
+	// mapped to map[id]stock remainingStock
+
 	for _, v := range param.Products {
+
+		// TODO check remaininStock[v.ProductID] < v.Quantity
 		// send request to product
-		err := o.SendRequestToReduceStock(model.AddStockProductRequest{
+		err := o.sendRequestToAddStock(model.AddStockProductRequest{
 			ProductID: v.ProductID,
 			Quantity:  -v.Quantity,
 		})
@@ -71,7 +76,7 @@ func (o *orderService) CheckoutOrder(ctx context.Context, param model.CheckoutOr
 	return orderID, nil
 }
 
-func (o orderService) SendRequestToReduceStock(request model.AddStockProductRequest) error {
+func (o *orderService) sendRequestToAddStock(request model.AddStockProductRequest) error {
 	requestBody, err := json.Marshal(request)
 	if err != nil {
 		return stacktrace.Propagate(err, "Failed Marshal")
@@ -104,5 +109,24 @@ func (o orderService) SendRequestToReduceStock(request model.AddStockProductRequ
 	}
 
 	// Send response to the original client
+	return nil
+}
+
+// ReleaseOrderFromCheckoutStatus function to return stock from order that has not been process from x duration
+func (o *orderService) ReleaseOrderFromCheckoutStatus(x time.Duration) error {
+	now := time.Now().Add(-x)
+	o.logger.Info(fmt.Sprintf("Get Order That has Been made before %s and has status checkout (1)", now.String()))
+	// Get Order That has Been made before now and has status checkout (1)
+
+	// 	Loop All Expired Order
+	// 		release Order
+	// 		Lock shop
+	// 		get order details by order ID
+	// 			loop all product in order details
+	// 			sendRequestToAddStock(model.AddStockProductRequest{
+	//				ProductID: v.ProductID,
+	//				Quantity:  -v.Quantity,
+	// 			})
+	// 		Unlock shop
 	return nil
 }
