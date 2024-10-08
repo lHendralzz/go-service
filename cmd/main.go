@@ -9,7 +9,10 @@ import (
 	"go-service/stdlib/database"
 	"go-service/stdlib/logger"
 
+	redisLock "go-service/stdlib/redis"
+
 	"github.com/gin-gonic/gin" // Gin framework
+	"github.com/go-redis/redis/v8"
 )
 
 // @title Swagger for go-service
@@ -24,6 +27,16 @@ import (
 
 // @docExpansion none
 func main() {
+	// Initialize Redis client
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379", // Redis server address
+		Password: "",               // No password
+		DB:       0,                // Default DB
+	})
+
+	// init a RedisLock instance
+	redisLock := redisLock.NewRedisLock(rdb)
+
 	debug := flag.Bool("debug", false, "Enable debug mode")
 	flag.Parse()
 	// init logger
@@ -37,10 +50,10 @@ func main() {
 	db := database.InitDB(logger, conf.Database)
 
 	// init repo
-	repo := repository.Init(db)
+	repo := repository.Init(db, logger)
 
 	// init service
-	svc := service.Init(repo, logger, conf.Service)
+	svc := service.Init(repo, logger, conf.Service, redisLock)
 	// init router
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()

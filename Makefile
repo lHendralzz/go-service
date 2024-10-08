@@ -27,3 +27,7 @@ run-debug: swag build
 .PHONY: mysql-start
 mysql-start:
 	@sudo service mysql start
+
+.PHONY: redis-start
+redis-start:
+	@sudo service redis-server start

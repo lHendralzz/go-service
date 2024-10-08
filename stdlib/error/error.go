@@ -12,6 +12,10 @@ const (
 	ErrorQuery
 	ErrorUnauthorized
 	ErrorInvalidRequest
+	ErrorBeginTransaction
+	ErrorRedisLock
+	ErrorLockedOrder
+	ErrorReduceProduct
 )
 
 type ErrorMessage map[stacktrace.ErrorCode]Message
@@ -37,6 +41,24 @@ var ErrorMessages = ErrorMessage{
 	ErrorInvalidRequest: {
 		StatusCode: http.StatusBadRequest,
 		Message:    "Invalid Request",
+	},
+
+	ErrorBeginTransaction: {
+		StatusCode: http.StatusInternalServerError,
+		Message:    "Failed Begin Transaciton",
+	},
+	ErrorRedisLock: {
+		StatusCode: http.StatusInternalServerError,
+		Message:    "Failed Redis",
+	},
+
+	ErrorLockedOrder: {
+		StatusCode: http.StatusUnprocessableEntity,
+		Message:    "Failed Checkout Order Locked",
+	},
+	ErrorReduceProduct: {
+		StatusCode: http.StatusInternalServerError,
+		Message:    "Failed Reduce Cost",
 	},
 }
 

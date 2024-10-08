@@ -42,6 +42,7 @@ func (r *rest) AuthChecker() gin.HandlerFunc {
 		}
 
 		r.logger.Debug("welcome ", claims.Username)
+		c.Set("userID", claims.UserID)
 		// Process request
 		c.Next()
 	}
