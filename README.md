@@ -8,10 +8,14 @@ A new golang project
 
 ### Prerequisites
 
--   [Go](https://golang.org/dl/) 1.19 or later
--
+- [Go](https://golang.org/dl/) 1.19 or later
+- mysql
+- redis
 
-### Installation
+### 💻 Installation
 
-1. go mod init
-2. go mod tidy
+1. go mod download
+2. make swag
+3. go mod tidy
+4. make run
+

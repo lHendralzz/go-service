@@ -11,6 +11,12 @@ type RedisLock struct {
 	client *redis.Client
 }
 
+type Option struct {
+	Host     string `env:"REDIS_HOST"`
+	Password string `env:"REDIS_PASSWORD"`
+	DB       string `env:"REDIS_DB"`
+}
+
 func NewRedisLock(client *redis.Client) *RedisLock {
 	return &RedisLock{client: client}
 }

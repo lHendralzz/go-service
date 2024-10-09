@@ -9,6 +9,7 @@ import (
 	"go-service/service"
 	"go-service/stdlib/database"
 	"go-service/stdlib/logger"
+	"strconv"
 
 	redisLock "go-service/stdlib/redis"
 
@@ -28,15 +29,6 @@ import (
 
 // @docExpansion none
 func main() {
-	// Initialize Redis client
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379", // Redis server address
-		Password: "",               // No password
-		DB:       0,                // Default DB
-	})
-
-	// init a RedisLock instance
-	redisLock := redisLock.NewRedisLock(rdb)
 
 	debug := flag.Bool("debug", false, "Enable debug mode")
 	flag.Parse()
@@ -45,6 +37,21 @@ func main() {
 
 	// parsing conf from .env and OS env
 	conf := parseConfig(logger)
+
+	dbredis, err := strconv.Atoi(conf.Redis.DB)
+	if err != nil {
+		logger.Error(err)
+		return
+	}
+	// Initialize Redis client
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     conf.Redis.Host,     // Redis server address
+		Password: conf.Redis.Password, // No password
+		DB:       dbredis,             // Default DB
+	})
+
+	// init a RedisLock instance
+	redisLock := redisLock.NewRedisLock(rdb)
 
 	// init db
 	logger.Info(conf.Database)

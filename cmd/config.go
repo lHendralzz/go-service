@@ -7,6 +7,7 @@ import (
 	"go-service/service"
 	"go-service/stdlib/config"
 	"go-service/stdlib/database"
+	"go-service/stdlib/redis"
 
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
@@ -34,6 +35,8 @@ type Conf struct {
 	Database  database.Option
 	Rest      restHandler.Option
 	Scheduler scheduler.Option
+
+	Redis redis.Option
 	// Business Config
 	Business
 }

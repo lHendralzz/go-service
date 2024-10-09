@@ -33,6 +33,6 @@ Thumbs.db
 *.tmp
 *.swp
 *.swo
-.env
+
 docs/
 build/
