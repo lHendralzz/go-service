@@ -17,10 +17,6 @@ pkg/
 .DS_Store
 Thumbs.db
 
-# Go specific files
-/go.sum
-/go.mod
-
 # IntelliJ IDEA
 .idea/
 

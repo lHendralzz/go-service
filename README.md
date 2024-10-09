@@ -13,4 +13,5 @@ A new golang project
 
 ### Installation
 
-1.
+1. go mod init
+2. go mod tidy
