@@ -24,6 +24,7 @@ type rest struct {
 
 type Option struct {
 	JWTKey string `env:"JWT_KEY"`
+	Port   string `env:"PORT"`
 }
 
 var once = &sync.Once{}
@@ -48,17 +49,6 @@ func (r *rest) Serve() {
 	r.ginEngine.Use(r.LoggerMiddleware())
 	r.ginEngine.Handle(POST, "/login", r.Login)
 
-	group := r.ginEngine.Group("/")
-	{
-		group.Use(r.AuthChecker())
-		// Product
-		group.GET("/product", r.GetProduct)
-		group.POST("/product/:product_id/add-stock", r.AddStockProduct)
-
-		// Order
-		group.POST("/order/check-out", r.CheckoutOrder)
-	}
-
 }
 
 func (r *rest) Run() {
@@ -66,7 +56,10 @@ func (r *rest) Run() {
 	newGin.Use(func(ctx *gin.Context) {
 		r.ginEngine.ServeHTTP(ctx.Writer, ctx.Request)
 	})
-	port := ":8080"
+	port := ":" + r.opt.Port
 	r.logger.Info("[HTTP] @", port)
-	newGin.Run(port)
+	err := newGin.Run(port)
+	if err != nil {
+		r.logger.Error(err)
+	}
 }

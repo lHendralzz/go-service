@@ -50,3 +50,13 @@ func (o *orderRepository) BeginTransaction() (*gorm.DB, error) {
 
 	return tx, nil
 }
+
+func (o *orderRepository) GetOrderWithStatusAndBeforeTime(status int, searchTime time.Time) ([]model.Order, error) {
+	var orders []model.Order
+	err := o.db.Where("created_at < ? and status = ?", searchTime, status).Find(&orders).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return orders, nil
+}

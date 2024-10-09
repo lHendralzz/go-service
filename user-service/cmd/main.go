@@ -7,6 +7,7 @@ import (
 	"go-service/handler/scheduler"
 	"go-service/repository"
 	"go-service/stdlib/database"
+	"go-service/stdlib/hash"
 	"go-service/stdlib/logger"
 	"go-service/usecase"
 	"strconv"
@@ -34,6 +35,7 @@ func main() {
 	flag.Parse()
 	// init logger
 	logger := logger.Init(*debug)
+	logger.Info(hash.HashPassword("string"))
 
 	// parsing conf from .env and OS env
 	conf := parseConfig(logger)

@@ -27,7 +27,7 @@ func parseConfig(logger *logrus.Logger) Conf {
 		return conf
 	}
 
-	logger.Debug(fmt.Sprintf("Success Parse Config"))
+	logger.Debug("Success Parse Config")
 	return conf
 }
 

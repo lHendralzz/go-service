@@ -2,7 +2,7 @@
 
 ## Overview
 
-A new golang project
+A new golang project for microservice
 
 ## Getting Started
 

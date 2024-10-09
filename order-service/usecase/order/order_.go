@@ -82,14 +82,14 @@ func (o *orderUsecase) sendRequestToAddStock(request model.AddStockProductReques
 		return stacktrace.Propagate(err, "Failed Marshal")
 	}
 
-	// TODO :localhost change to product Usecase
-	url := "http://localhost:8080" + fmt.Sprintf("/product/%d/add-stock", request.ProductID)
+	// TODO :localhost change to product Service
+	url := "http://localhost:8091" + fmt.Sprintf("/product/%d/add-stock", request.ProductID)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
 	if err != nil {
 		return stacktrace.Propagate(err, "Failed Create New Request")
 	}
 
-	// TODO : fix this from generate token
+	// TODO : fix this from generate token to use config variable
 	token, err := auth.GenerateToken("admin", 1, "SECRET_JWT_KEY")
 	if err != nil {
 		return stacktrace.Propagate(err, "Failed Generate Token")
@@ -113,20 +113,39 @@ func (o *orderUsecase) sendRequestToAddStock(request model.AddStockProductReques
 }
 
 // ReleaseOrderFromCheckoutStatus function to return stock from order that has not been process from x duration
-func (o *orderUsecase) ReleaseOrderFromCheckoutStatus(x time.Duration) error {
-	now := time.Now().Add(-x)
+func (o *orderUsecase) ReleaseOrderFromCheckoutStatus(duration time.Duration) error {
+	now := time.Now().Add(-duration)
 	o.logger.Info(fmt.Sprintf("Get Order That has Been made before %s and has status checkout (1)", now.String()))
 	// Get Order That has Been made before now and has status checkout (1)
 
-	// 	Loop All Expired Order
-	// 		release Order
-	// 		Lock shop
-	// 		get order details by order ID
-	// 			loop all product in order details
-	// 			sendRequestToAddStock(model.AddStockProductRequest{
-	//				ProductID: v.ProductID,
-	//				Quantity:  -v.Quantity,
-	// 			})
-	// 		Unlock shop
+	expiredOrders, err := o.orderRepository.GetOrderWithStatusAndBeforeTime(model.OrderStatusCheckout, now)
+	if err != nil {
+		return stacktrace.PropagateWithCode(err, x.ErrorQuery, "Failed GetOrderWithStatusAndBeforeTime")
+	}
+
+	ctx := context.Background()
+	for _, expiredOrder := range expiredOrders {
+		o.logger.Info(expiredOrder)
+
+		key := fmt.Sprintf("checkout:shop:%d", expiredOrder.ShopID)
+		acquire, err := o.redis.AcquireLock(ctx, key, time.Second*time.Duration(o.opt.LockDuration))
+		if err != nil {
+			o.logger.Error(stacktrace.Propagate(err, "Error Get lock"))
+			continue
+		}
+
+		if !acquire {
+			o.logger.Error(stacktrace.Propagate(err, fmt.Sprintf("still in lock shoID %d", expiredOrder.ShopID)))
+			continue
+		}
+
+		defer o.redis.ReleaseLock(ctx, key)
+		// get order details by order ID
+		// 		loop all product in order details
+		// 		sendRequestToAddStock(model.AddStockProductRequest{
+		//			ProductID: v.ProductID,
+		//			Quantity:  -v.Quantity,
+		// 		})
+	}
 	return nil
 }

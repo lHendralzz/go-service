@@ -2,6 +2,7 @@ package order
 
 import (
 	"go-service/model"
+	"time"
 
 	"gorm.io/gorm"
 
@@ -12,6 +13,7 @@ import (
 type OrderRepository interface {
 	BeginTransaction() (*gorm.DB, error)
 	AddOrderWithTx(*gorm.DB, model.CheckoutOrderRequest) (int, error)
+	GetOrderWithStatusAndBeforeTime(status int, searchTime time.Time) ([]model.Order, error)
 }
 
 // orderRepository is a concrete implementation of the orderRepository interface.

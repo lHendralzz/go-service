@@ -1,43 +1,8 @@
 definitions:
-  model.AddStockProductRequest:
-    properties:
-      quantity:
-        example: 1
-        type: integer
-    type: object
-  model.AddStockProductResponse:
-    properties:
-      message:
-        type: string
-    type: object
-  model.CheckoutOrderRequest:
-    properties:
-      products:
-        items:
-          $ref: '#/definitions/model.ProductCheckoutOrderRequest'
-        type: array
-      shop_id:
-        example: 1
-        type: integer
-    type: object
-  model.CheckoutOrderResponse:
-    properties:
-      message:
-        type: string
-      order_id:
-        type: integer
-    type: object
   model.ErrorResponse:
     properties:
       message:
         type: string
-    type: object
-  model.GetProductResponse:
-    properties:
-      products:
-        items:
-          $ref: '#/definitions/model.Product'
-        type: array
     type: object
   model.LoginRequest:
     properties:
@@ -50,28 +15,6 @@ definitions:
     properties:
       token:
         type: string
-    type: object
-  model.Product:
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-      price:
-        type: integer
-      shopID:
-        type: integer
-      stock:
-        type: integer
-    type: object
-  model.ProductCheckoutOrderRequest:
-    properties:
-      product_id:
-        example: 1
-        type: integer
-      quanttity:
-        example: 1
-        type: integer
     type: object
 info:
   contact: {}
@@ -109,90 +52,6 @@ paths:
       summary: Login
       tags:
       - user
-  /order/check-out:
-    post:
-      consumes:
-      - application/json
-      description: Endpoint to Insert an Order with status checkout will need shop_id
-        and list of product_id and their quantity
-      parameters:
-      - description: Add Product
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/model.CheckoutOrderRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.CheckoutOrderResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/model.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: checkout an Order
-      tags:
-      - order
-  /product:
-    get:
-      consumes:
-      - application/json
-      description: Endpoint For Authenticate User view all of products along with
-        their stock
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.GetProductResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/model.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Get All Product
-      tags:
-      - product
-  /product/{product_id}/add-stock:
-    post:
-      consumes:
-      - application/json
-      description: Endpoint to add stock number of a Product
-      parameters:
-      - description: Product ID
-        in: path
-        name: product_id
-        required: true
-        type: integer
-      - description: Add Product
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/model.AddStockProductRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.AddStockProductResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/model.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Add Stock of a Product
-      tags:
-      - product
 securityDefinitions:
   BearerAuth:
     in: header
